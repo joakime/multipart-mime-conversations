@@ -11,10 +11,31 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <apache.version>4.5.5</apache.version>
     <jetty.version>9.4.9.v20180320</jetty.version>
   </properties>
 
   <dependencies>
+    <!-- apache client -->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>${apache.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpmime</artifactId>
+      <version>${apache.version}</version>
+    </dependency>
+
+    <!-- jetty client -->
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-client</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+
+    <!-- server components -->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>

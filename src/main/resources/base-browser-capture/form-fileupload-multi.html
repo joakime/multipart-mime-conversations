@@ -1,0 +1,27 @@
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<body>
+    <h1>Form File Upload</h1>
+<form accept-charset="UTF-8"
+      method="POST"
+      enctype="multipart/form-data"
+      action="/capture/form-fileupload-alt">
+    <p>Description</p>
+    <input type="text" name="description" value="the larger icon"/>
+    <p>File</p>
+    <input type="file" name="file"/>
+    <p>alternate</p>
+    <input type="text" name="alternate"/>
+    <p>File alt (make sure this is a text file)</p>
+    <input type="file" name="file-alt" formenctype="text/plain"/>
+    <p></p>
+    <input type="Submit" value="Capture">
+</form>
+
+<hr>
+Text File for download <a href="text.raw">text.raw</a>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<body>
+    <h1>Form SJIS (with <code>_charset_</code>)</h1>
+<form accept-charset="shift-jis"
+      method="POST"
+      enctype="multipart/form-data"
+      action="/capture/sjis-form-charset">
+    <input type="hidden" name="_charset_"/>
+    <p>Japanese</p>
+    <input type="text" name="japanese" value="健治"/>
+    <p>Hello</p>
+    <input type="text" name="hello" value="ャユ戆タ"/>
+    <p></p>
+    <input type="Submit" value="Capture">
+</form>
+</body>
+</html>

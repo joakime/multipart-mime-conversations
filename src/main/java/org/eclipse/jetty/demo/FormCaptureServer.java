@@ -1,4 +1,5 @@
 package org.eclipse.jetty.demo;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +34,7 @@ public class FormCaptureServer
 
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/");
-        context.setBaseResource(new PathResource(MavenTestingUtils.getTestResourceDir("base-browser-capture")));
+        context.setBaseResource(new PathResource(MavenTestingUtils.getProjectDirPath("src/main/resources/base-browser-capture")));
 
         context.addServlet(FormCaptureServlet.class, "/capture/*");
 
@@ -60,8 +61,7 @@ public class FormCaptureServer
 
             Path outputDir = MavenTestingUtils.getTestResourcesPath();
 
-
-            String browserId = toBrowserId(req.getHeader("User-Agent"));
+            String browserId = toBrowserId(req);
             String prefix = "browser-capture-" + name + "-" + browserId;
             Path outputRaw = outputDir.resolve(prefix + ".raw");
             try (InputStream in = req.getInputStream();
@@ -88,52 +88,62 @@ public class FormCaptureServer
             req.getRequestDispatcher("/thanks.html").forward(req, resp);
         }
 
-        private String toBrowserId(String ua)
+        private String toBrowserId(HttpServletRequest request)
         {
-            if(ua.contains("Edge/"))
+            // A client provided ID
+            String id = request.getHeader("X-BrowserId");
+            if (id != null)
+            {
+                return id;
+            }
+
+            // A browser?
+            String ua = request.getHeader("User-Agent");
+
+            if (ua.contains("Edge/"))
             {
                 return "edge";
             }
 
-            if(ua.contains("Safari/"))
+            if (ua.contains("Safari/"))
             {
-                if(ua.contains("Chrome/"))
+                if (ua.contains("Chrome/"))
                 {
-                    if(ua.contains("Mobile"))
+                    if (ua.contains("Mobile"))
                     {
-                        if(ua.contains("Android"))
+                        if (ua.contains("Android"))
                             return "android-chrome";
                         return "mobile-chrome";
                     }
                     return "chrome";
                 }
 
-                if(ua.contains("Mobile"))
+                if (ua.contains("Mobile"))
                     return "ios-safari";
                 return "safari";
             }
 
-            if(ua.contains("Trident/"))
+            if (ua.contains("Trident/"))
             {
                 return "msie";
             }
 
-            if(ua.contains("Firefox/"))
+            if (ua.contains("Firefox/"))
             {
-                if(ua.contains("Mobile"))
+                if (ua.contains("Mobile"))
                 {
-                    if(ua.contains("Android"))
+                    if (ua.contains("Android"))
                         return "android-firefox";
                     return "mobile-firefox";
                 }
                 return "firefox";
             }
 
-            if(ua.contains("Chrome/"))
+            if (ua.contains("Chrome/"))
             {
-                if(ua.contains("Mobile"))
+                if (ua.contains("Mobile"))
                 {
-                    if(ua.contains("Android"))
+                    if (ua.contains("Android"))
                         return "android-chrome";
                     return "mobile-chrome";
                 }
@@ -141,9 +151,9 @@ public class FormCaptureServer
             }
 
             StringBuilder safe = new StringBuilder();
-            for(char c: ua.toCharArray())
+            for (char c : ua.toCharArray())
             {
-                if(Character.isDigit(c) || Character.isLetter(c) || c=='.')
+                if (Character.isDigit(c) || Character.isLetter(c) || c == '.')
                     safe.append(c);
                 else
                     safe.append('_');

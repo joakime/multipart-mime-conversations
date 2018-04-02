@@ -1,0 +1,1 @@
+The captured browser transactions are saved here.
