@@ -4,15 +4,14 @@ import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.eclipse.jetty.demo.Util.newSpecBoundaryString;
+import static org.eclipse.jetty.demo.Util.pngPath;
+import static org.eclipse.jetty.demo.Util.sha1sum;
+import static org.eclipse.jetty.demo.Util.urlEncode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -25,18 +24,9 @@ import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.message.BasicNameValuePair;
-import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
-import org.eclipse.jetty.toolchain.test.Sha1Sum;
 
 public class MultipartCreator
 {
-    static
-    {
-        pngPath = MavenTestingUtils.getProjectFilePath("src/main/resources/base-browser-capture/jetty-avatar-256.png");
-    }
-
-    public static final Path pngPath;
-
     public static HttpEntity createTextFiles() throws IOException
     {
         String text = "text default\r\n";
@@ -75,7 +65,7 @@ public class MultipartCreator
                 .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
                 .addTextBody("fruit", "banana")
                 .addTextBody("color", "yellow")
-                .addTextBody("cost", "$0.12 USG")
+                .addTextBody("cost", "$0.12 USD")
                 .addTextBody("comments", "--" + exampleBoundary)
                 .build();
 
@@ -338,40 +328,5 @@ public class MultipartCreator
                 .build();
 
         return entity;
-    }
-
-    private static String urlEncode(String raw, Charset charset) throws UnsupportedEncodingException
-    {
-        return URLEncoder.encode(raw, charset.toString());
-    }
-
-    /**
-     * Create a new Boundary String allowing only valid (per spec) characters
-     */
-    private static String newSpecBoundaryString()
-    {
-        int size = ThreadLocalRandom.current().nextInt(30, 40);
-        char cbuf[] = new char[size];
-        for (int i = 0; i < size; i++)
-        {
-            cbuf[i] = SPEC_CHARS[ThreadLocalRandom.current().nextInt(SPEC_CHARS.length)];
-        }
-        return new String(cbuf);
-    }
-
-    private final static char[] SPEC_CHARS =
-            "-_1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    .toCharArray();
-
-    private static String sha1sum(byte buf[]) throws IOException
-    {
-        try
-        {
-            return Sha1Sum.calculate(buf);
-        }
-        catch (NoSuchAlgorithmException e)
-        {
-            throw new IOException(e);
-        }
     }
 }
