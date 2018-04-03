@@ -17,6 +17,7 @@ import org.eclipse.jetty.client.util.BytesContentProvider;
 import org.eclipse.jetty.client.util.MultiPartContentProvider;
 import org.eclipse.jetty.client.util.PathContentProvider;
 import org.eclipse.jetty.client.util.StringContentProvider;
+import org.eclipse.jetty.demo.Sjis;
 import org.eclipse.jetty.http.HttpFields;
 import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.toolchain.test.MavenTestingUtils;
@@ -98,7 +99,7 @@ public class MultiPartContentCreator
         HttpFields fields = new HttpFields();
         fields.add("X-SHA1", sha1sum(buf));
 
-        content.addFieldPart("whitespace", whitespaceProvider, fields);
+        content.addFilePart("whitespace", "whitespace.txt", whitespaceProvider, fields);
 
         return content;
     }
@@ -164,7 +165,7 @@ public class MultiPartContentCreator
 
     public static MultiPartContentProvider createSjis() throws IOException
     {
-        final String SJIS = "Shift_JIS";
+        final String SJIS = "Shift-JIS";
         final Charset SJIS_CHARSET = Charset.forName(SJIS);
 
         MultiPartContentProvider content = new MultiPartContentProvider();
@@ -172,8 +173,11 @@ public class MultiPartContentCreator
         HttpFields sjisFields = new HttpFields();
         sjisFields.add(HttpHeader.CONTENT_TYPE, "text/plain; charset=" + SJIS);
 
-        content.addFieldPart("japanese", new StringContentProvider("text/plain", "健治", SJIS_CHARSET), sjisFields);
-        content.addFieldPart("hello", new StringContentProvider("text/plain", "ャユ戆タ", SJIS_CHARSET), sjisFields);
+        byte sjisA[] = Sjis.OPEN_SOURCE.getBytes(SJIS_CHARSET);
+        byte sjisB[] = Sjis.ECLIPSE_JETTY.getBytes(SJIS_CHARSET);
+
+        content.addFieldPart("japanese", new BytesContentProvider("text/plain", sjisA), sjisFields);
+        content.addFieldPart("hello", new BytesContentProvider("text/plain", sjisB), sjisFields);
 
         return content;
     }
@@ -190,13 +194,13 @@ public class MultiPartContentCreator
         content.addFilePart("upload_file", "filename", new PathContentProvider(pngPath), null);
         content.addFieldPart("power", new StringContentProvider("\uAB35о\uD835\uDDCBⲥ\uD835\uDDBE"), null);
 
-        final String SJIS = "Shift_JIS";
+        final String SJIS = "Shift-JIS";
         final Charset SJIS_CHARSET = Charset.forName(SJIS);
         HttpFields sjisFields = new HttpFields();
         sjisFields.add(HttpHeader.CONTENT_TYPE, "text/plain; charset=" + SJIS);
 
-        content.addFieldPart("japanese", new StringContentProvider("text/plain", "健治", SJIS_CHARSET), sjisFields);
-        content.addFieldPart("hello", new StringContentProvider("text/plain", "ャユ戆タ", SJIS_CHARSET), sjisFields);
+        content.addFieldPart("japanese", new StringContentProvider("text/plain", Sjis.OPEN_SOURCE, SJIS_CHARSET), sjisFields);
+        content.addFieldPart("hello", new StringContentProvider("text/plain", Sjis.ECLIPSE_JETTY, SJIS_CHARSET), sjisFields);
 
         return content;
     }

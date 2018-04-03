@@ -24,6 +24,7 @@ import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.message.BasicNameValuePair;
+import org.eclipse.jetty.demo.Sjis;
 
 public class MultipartCreator
 {
@@ -291,12 +292,12 @@ public class MultipartCreator
 
     public static HttpEntity createSjis() throws IOException
     {
-        ContentType SJIS = ContentType.TEXT_PLAIN.withCharset("sjis");
+        ContentType SJIS = ContentType.TEXT_PLAIN.withCharset("Shift-JIS");
 
         HttpEntity entity = MultipartEntityBuilder
                 .create()
-                .addTextBody("japanese", "健治", SJIS)
-                .addTextBody("hello", "ャユ戆タ", SJIS)
+                .addTextBody("japanese", Sjis.OPEN_SOURCE, SJIS)
+                .addTextBody("hello", Sjis.ECLIPSE_JETTY, SJIS)
                 .build();
 
         return entity;
@@ -323,8 +324,8 @@ public class MultipartCreator
                 .addTextBody("company", "bob & frank's shoe repair", ContentType.create("application/x-www-form-urlencoded"))
                 .addBinaryBody("upload_file", pngPath.toFile(), ContentType.create("application/octet-stream"), "filename")
                 .addTextBody("power", "\uAB35о\uD835\uDDCBⲥ\uD835\uDDBE", ContentType.TEXT_PLAIN.withCharset("utf-8"))
-                .addTextBody("japanese", "健治", ContentType.TEXT_PLAIN.withCharset("SJIS"))
-                .addTextBody("hello", "ャユ戆タ", ContentType.TEXT_PLAIN.withCharset("SJIS"))
+                .addTextBody("japanese", Sjis.OPEN_SOURCE, ContentType.TEXT_PLAIN.withCharset("Shift-JIS"))
+                .addTextBody("hello", Sjis.ECLIPSE_JETTY, ContentType.TEXT_PLAIN.withCharset("Shift-JIS"))
                 .build();
 
         return entity;
