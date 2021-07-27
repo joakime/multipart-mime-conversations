@@ -11,7 +11,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <apache.version>4.5.5</apache.version>
+    <apache.version>4.5.13</apache.version>
     <jetty.version>9.4.9.v20180320</jetty.version>
   </properties>
 
